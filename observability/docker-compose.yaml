@@ -32,7 +32,6 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
-      start_interval: "5s"
 
   opensearch-dashboards:
     image: opensearchproject/opensearch-dashboards:2.3.0
