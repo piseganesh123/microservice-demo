@@ -28,11 +28,11 @@ services:
       - observability-net
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9200"]
-      interval: 1m30s
+      interval: 60s
       timeout: 10s
       retries: 3
       start_period: 40s
-      start_interval: 5s
+      start_interval: "5s"
 
   opensearch-dashboards:
     image: opensearchproject/opensearch-dashboards:2.3.0
@@ -64,6 +64,7 @@ services:
     depends_on:
       opensearch-node1:
         condition: service_healthy
+
   otel-collector:
     container_name: otel-collector
     image: otel/opentelemetry-collector:0.62.1 
@@ -78,9 +79,10 @@ services:
       - observability-net
     depends_on:
       opensearch-node1:
-        condition: service_healthy
+        condition: service_started
       data-prepper:
         condition: service_started
+  
   fluentbit:
     container_name: fluentbit
     image: fluent/fluent-bit:1.9.9
