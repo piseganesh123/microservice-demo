@@ -1,5 +1,6 @@
 version: '3'
 services:
+
   opensearch-node1:
     image: opensearchproject/opensearch:2.3.0
     container_name: opensearch-node1
@@ -39,6 +40,8 @@ services:
       - "DISABLE_SECURITY_DASHBOARDS_PLUGIN=true" # disables security dashboards plugin in OpenSearch Dashboards
     networks:
       - observability-net
+    depends_on:
+      - opensearch-node1
 
   data-prepper:
     container_name: data-prepper
@@ -51,6 +54,9 @@ services:
       - ./configs/data-prepper-pipelines.yaml:/usr/share/data-prepper/pipelines/pipelines.yaml
     networks:
       - observability-net
+    depends_on:
+      - opensearch-node1
+
 
   otel-collector:
     container_name: otel-collector
@@ -64,6 +70,8 @@ services:
       - '13133:13133' #health_check extension
     networks:
       - observability-net
+    depends_on:
+      - opensearch-node1
 
   fluentbit:
     container_name: fluentbit
@@ -76,8 +84,10 @@ services:
       - ./configs/parsers.conf:/fluent-bit/etc/parsers.conf
     networks:
       - observability-net
+    depends_on:
+      - opensearch-node1
+      - data-prepper
       
-
 volumes:
   opensearch-data1:
 
